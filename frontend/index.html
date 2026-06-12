@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FloodSense AI — Prediction Dashboard</title>
+
+  <!-- Chart.js CDN — used for all chart visualizations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SIDEBAR NAVIGATION
+       Persistent left-rail navigation for section jumping.
+  ═══════════════════════════════════════════════════════════════ -->
+  <nav class="sidebar" id="sidebar" aria-label="Dashboard navigation">
+    <div class="sidebar__brand">
+      <span class="sidebar__icon">⛈</span>
+      <span class="sidebar__title">FloodSense<em>AI</em></span>
+    </div>
+
+    <ul class="sidebar__nav" role="list">
+      <li><a href="#section-overview"    class="sidebar__link active" data-section="overview">    <span class="nav-icon">◈</span> Overview    </a></li>
+      <li><a href="#section-preprocess"  class="sidebar__link"        data-section="preprocess">  <span class="nav-icon">⚙</span> Preprocessing</a></li>
+      <li><a href="#section-features"    class="sidebar__link"        data-section="features">    <span class="nav-icon">◎</span> Features     </a></li>
+      <li><a href="#section-predict"     class="sidebar__link"        data-section="predict">     <span class="nav-icon">▶</span> Predict       </a></li>
+      <li><a href="#section-analytics"   class="sidebar__link"        data-section="analytics">   <span class="nav-icon">◉</span> Analytics    </a></li>
+    </ul>
+
+    <!-- Theme toggle button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+      <span id="themeIcon">☀</span>
+    </button>
+  </nav>
+
+  <!-- Hamburger for mobile -->
+  <button class="hamburger" id="hamburger" aria-label="Open navigation">☰</button>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MAIN CONTENT AREA
+  ═══════════════════════════════════════════════════════════════ -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ─────────────────────────────────────────────────────────────
+         SECTION 1 — PROJECT OVERVIEW
+         Hero section with stat cards and project description.
+    ───────────────────────────────────────────────────────────── -->
+    <section id="section-overview" class="section">
+
+      <header class="section__header">
+        <div class="section__eyebrow">AI · Linear Regression · Environmental ML</div>
+        <h1 class="section__title">Flood Probability<br><em>Prediction System</em></h1>
+        <p class="section__subtitle">
+          A machine learning pipeline that ingests 11 socio-environmental risk indicators
+          and outputs a continuous flood probability score between 0 and 1.
+        </p>
+      </header>
+
+      <!-- Stat cards — populated by script.js with model metrics -->
+      <div class="stat-grid" id="statGrid">
+        <!-- JS injects <article class="stat-card"> elements here -->
+      </div>
+
+      <!-- Info card: why this project exists -->
+      <article class="info-card">
+        <div class="info-card__badge">Project Brief</div>
+        <h2 class="info-card__title">What does this system do?</h2>
+        <p>
+          Flooding is a leading natural disaster, driven by a complex interplay of
+          meteorological, geographical, and anthropogenic factors. This dashboard
+          visualises a <strong>Linear Regression model</strong> trained on the
+          <em>Flood Prediction Dataset</em> to predict flood probability from
+          11 engineered risk features.
+        </p>
+        <p>
+          The goal is to give researchers and planners an interpretable, interactive
+          tool — not a black box. Every design decision (feature selection, preprocessing,
+          split strategy) is explained in the sections below.
+        </p>
+      </article>
+
+      <!-- Pipeline steps visual -->
+      <div class="pipeline" id="pipeline" aria-label="ML Pipeline steps">
+        <!-- JS builds steps dynamically -->
+      </div>
+
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         SECTION 2 — DATA PREPROCESSING INSIGHTS
+         Explains every preprocessing step with rationale cards.
+    ───────────────────────────────────────────────────────────── -->
+    <section id="section-preprocess" class="section">
+
+      <header class="section__header">
+        <div class="section__eyebrow">Step 01</div>
+        <h2 class="section__title">Data Preprocessing</h2>
+        <p class="section__subtitle">
+          Raw data is rarely model-ready. Each transformation below is deliberate —
+          hover the cards to read the rationale.
+        </p>
+      </header>
+
+      <!-- Preprocessing rationale cards — JS renders from DATA object -->
+      <div class="card-grid" id="preprocessCards">
+        <!-- JS injects <article class="rationale-card"> elements here -->
+      </div>
+
+      <!-- Dataset statistics table -->
+      <article class="info-card info-card--wide">
+        <div class="info-card__badge">Dataset Snapshot</div>
+        <h3 class="info-card__title">Descriptive Statistics</h3>
+        <p class="info-card__meta">
+          Features are rated on an ordinal scale (1–10). The target variable
+          <code>FloodProbability</code> is continuous in [0, 1].
+          No missing values were found in the dataset.
+        </p>
+        <div class="table-scroll">
+          <table class="data-table" id="statsTable">
+            <caption>Feature statistics (mock values representative of the dataset)</caption>
+            <!-- JS builds thead + tbody -->
+          </table>
+        </div>
+      </article>
+
+      <!-- Distribution chart -->
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <h3>Feature Value Distribution</h3>
+          <p>Average feature scores across the dataset. Higher bars indicate features
+             with elevated mean risk values.</p>
+        </div>
+        <div class="chart-card__body">
+          <canvas id="distributionChart" aria-label="Feature distribution bar chart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         SECTION 3 — FEATURE SELECTION
+         Explains which features were selected and why.
+    ───────────────────────────────────────────────────────────── -->
+    <section id="section-features" class="section">
+
+      <header class="section__header">
+        <div class="section__eyebrow">Step 02</div>
+        <h2 class="section__title">Feature Selection</h2>
+        <p class="section__subtitle">
+          Not all variables contribute equally to flood risk. Below we examine
+          correlation strength, domain relevance, and the final feature set used.
+        </p>
+      </header>
+
+      <!-- Feature importance horizontal bar chart -->
+      <div class="chart-card chart-card--tall">
+        <div class="chart-card__header">
+          <h3>Feature Importance (Correlation with FloodProbability)</h3>
+          <p>Pearson correlation coefficients between each predictor and the target.
+             Features with |r| &gt; 0.1 were retained for training.</p>
+        </div>
+        <div class="chart-card__body">
+          <canvas id="importanceChart" aria-label="Feature importance horizontal bar chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Info card: why correlation-based selection -->
+      <article class="info-card">
+        <div class="info-card__badge">Methodology Note</div>
+        <h3 class="info-card__title">Why correlation-based feature selection?</h3>
+        <p>
+          Pearson correlation is a fast, interpretable filter method. For a linear
+          model specifically, features with near-zero linear correlation with the target
+          add noise without improving predictions. We removed features with |r| &lt; 0.05
+          to keep the model parsimonious.
+        </p>
+        <p>
+          <strong>All 11 features</strong> — MonsoonIntensity, TopographyDrainage,
+          RiverManagement, Deforestation, Urbanization, ClimateChange, DamsQuality,
+          Siltation, AgriculturalPractices, Encroachments, and
+          IneffectiveDisasterPreparedness — passed the threshold and were retained.
+        </p>
+      </article>
+
+      <!-- Train / Test split explanation -->
+      <article class="info-card info-card--accent">
+        <div class="info-card__badge">Train–Test Split</div>
+        <h3 class="info-card__title">80 / 20 Stratified Split — Why?</h3>
+        <div class="split-visual" aria-label="80 percent train, 20 percent test">
+          <div class="split-visual__bar">
+            <div class="split-visual__train" style="width: 80%">Train&nbsp;80%</div>
+            <div class="split-visual__test"  style="width: 20%">Test&nbsp;20%</div>
+          </div>
+        </div>
+        <p>
+          An 80/20 ratio gives the model sufficient training data while reserving
+          enough unseen samples for a reliable generalisation estimate.
+          <code>random_state=42</code> ensures reproducibility across runs —
+          any collaborator running the same notebook will get identical splits.
+        </p>
+      </article>
+
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         SECTION 4 — PREDICTION INPUT
+         Interactive form for live (or mock) flood probability prediction.
+    ───────────────────────────────────────────────────────────── -->
+    <section id="section-predict" class="section">
+
+      <header class="section__header">
+        <div class="section__eyebrow">Step 03 — Interactive</div>
+        <h2 class="section__title">Run a Prediction</h2>
+        <p class="section__subtitle">
+          Adjust each risk factor using the sliders below, then click
+          <strong>Predict</strong> to get a flood probability estimate.
+        </p>
+      </header>
+
+      <!-- 
+        BACKEND INTEGRATION POINT
+        ─────────────────────────
+        This form collects input values for all 11 features.
+        In script.js, the handlePrediction() function currently runs a
+        mock linear model. To connect your Python Flask/FastAPI backend:
+
+          1. Replace the mock calculation with:
+               const res = await fetch('/api/predict', {
+                 method: 'POST',
+                 headers: {'Content-Type': 'application/json'},
+                 body: JSON.stringify(featureValues)
+               });
+               const data = await res.json();
+               displayResult(data.probability);
+
+          2. Your Flask endpoint should accept JSON and return:
+               {"probability": 0.621}
+      -->
+      <div class="predict-layout">
+        <div class="predict-form-wrapper">
+          <div class="slider-grid" id="sliderGrid">
+            <!-- JS dynamically builds range sliders for each feature -->
+          </div>
+
+          <div class="predict-actions">
+            <button class="btn btn--primary" id="predictBtn">
+              ▶ &nbsp;Run Prediction
+            </button>
+            <button class="btn btn--ghost" id="resetBtn">
+              ↺ &nbsp;Reset Defaults
+            </button>
+          </div>
+        </div>
+
+        <!-- Result panel — shown after prediction -->
+        <aside class="result-panel" id="resultPanel" aria-live="polite" aria-atomic="true">
+          <div class="result-panel__placeholder" id="resultPlaceholder">
+            <span class="result-panel__hint">Set feature values and click<br><strong>Run Prediction</strong></span>
+          </div>
+          <div class="result-panel__output hidden" id="resultOutput">
+            <div class="gauge-wrapper">
+              <canvas id="gaugeChart" width="220" height="220" aria-label="Flood probability gauge"></canvas>
+            </div>
+            <div class="result-label" id="resultLabel">—</div>
+            <div class="result-probability" id="resultProbability">—</div>
+            <div class="result-risk-badge" id="resultRiskBadge"></div>
+            <ul class="result-breakdown" id="resultBreakdown">
+              <!-- JS injects top contributing features here -->
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────────────────────
+         SECTION 5 — ANALYTICS & MODEL PERFORMANCE
+         Charts for evaluation metrics, correlation heatmap, actual vs predicted.
+    ───────────────────────────────────────────────────────────── -->
+    <section id="section-analytics" class="section">
+
+      <header class="section__header">
+        <div class="section__eyebrow">Step 04</div>
+        <h2 class="section__title">Model Analytics</h2>
+        <p class="section__subtitle">
+          How well does the Linear Regression model generalise?
+          Evaluation metrics and diagnostic charts are shown below.
+        </p>
+      </header>
+
+      <!-- Metric cards row -->
+      <div class="metric-grid" id="metricGrid">
+        <!-- JS injects metric cards here -->
+      </div>
+
+      <!-- Info card: interpreting R² -->
+      <article class="info-card">
+        <div class="info-card__badge">Interpreting the Metrics</div>
+        <h3 class="info-card__title">What do MAE, MSE, RMSE, and R² tell us?</h3>
+        <div class="metric-explain-grid">
+          <div class="metric-explain">
+            <code>MAE = 0.031</code>
+            <p>On average, predictions deviate by ±3.1 percentage points from
+               the true probability — a tight error for a 0–1 scale.</p>
+          </div>
+          <div class="metric-explain">
+            <code>RMSE = 0.038</code>
+            <p>RMSE penalises large errors more heavily than MAE.
+               A value close to MAE indicates few large outlier errors.</p>
+          </div>
+          <div class="metric-explain">
+            <code>MSE = 0.0015</code>
+            <p>The squared average error. Used as the actual loss function
+               optimised during Linear Regression training.</p>
+          </div>
+          <div class="metric-explain">
+            <code>R² = 0.335</code>
+            <p>The model explains ~33.5% of variance in flood probability.
+               This is modest — non-linear models or richer features
+               could improve this further.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Charts row: two-column on desktop -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3>Actual vs. Predicted (Scatter)</h3>
+            <p>Points near the diagonal line indicate accurate predictions.
+               Spread indicates residual error.</p>
+          </div>
+          <div class="chart-card__body">
+            <canvas id="scatterChart" aria-label="Actual vs Predicted scatter plot"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3>Residual Distribution</h3>
+            <p>A bell-shaped residual distribution centred at zero confirms
+               that the model's errors are random, not systematic.</p>
+          </div>
+          <div class="chart-card__body">
+            <canvas id="residualChart" aria-label="Residual distribution histogram"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Correlation heatmap approximation using Chart.js matrix -->
+      <div class="chart-card chart-card--full">
+        <div class="chart-card__header">
+          <h3>Feature Correlation Matrix</h3>
+          <p>Pairwise Pearson correlations between all features and the target.
+             Strong off-diagonal values may indicate multicollinearity.</p>
+        </div>
+        <div class="chart-card__body chart-card__body--heatmap">
+          <canvas id="heatmapCanvas" aria-label="Correlation heatmap"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+  </main><!-- /main-content -->
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════════ -->
+  <footer class="app-footer">
+    <span>FloodSense<em>AI</em> — Flood Probability Prediction System</span>
+    <span>Model: Linear Regression · Dataset: Flood Prediction Dataset</span>
+  </footer>
+
+  <!-- Link to external scripts (always at bottom of body) -->
+  <script src="script.js"></script>
+</body>
+</html>
