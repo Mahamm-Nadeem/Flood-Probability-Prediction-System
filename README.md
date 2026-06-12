@@ -1,71 +1,79 @@
 # Flood Probability Prediction System
 
-A machine learning repository dedicated to analyzing environmental, geographical, and infrastructural risk factors to predict flood probabilities. This project implements a full data science pipeline—ranging from exploratory data analysis (EDA) and rigorous statistical checks to feature engineering and predictive model evaluation.
-
-## Dataset & Features
-
-The system evaluates a comprehensive matrix of macro and micro environmental features to establish risk probabilities:
-
-* **Climate & Weather:** Precipitation, Monsoon Intensity, El Niño Effects.
-* **Geographical Factors:** Topography Drainage, River Management, Coastal Vulnerability, Watersheds.
-* **Land & Infrastructure:** Deforestation, Urbanization, Agricultural Practices, Dams Quality, Siltation.
-* **Socio-Economic & Policy Factors:** Landslides, Ineffective Disaster Preparedness, Drainage Systems, Encroachments, Political Factors.
+A full-stack, data-driven machine learning application that predicts flood probabilities based on environmental, infrastructure, and climate risk factors. The system features a trained machine learning pipeline, a Flask backend API for serving real-time inferences, and an interactive frontend dashboard for users to input environmental metrics and analyze risk levels.
 
 ---
 
-## 🛠️ Project Pipeline
+## 📁 Project Structure
 
-### 1. Exploratory Data Analysis (EDA)
+The repository is organized into four dedicated operational modules:
 
-* **Statistical Profiling:** Evaluation of dataset shapes, central tendencies, and missing value checks.
-* **Distribution Analysis:** Visualization of feature distributions to detect skewness and variance.
-* **Correlation Matrix:** Large-scale heatmaps analyzing multicollinearity and structural relationships between target variables and environmental indices.
-
-### 2. Data Preprocessing & Validation
-
-* **Feature Scaling:** Standardization/Normalization of highly varying scales across geographical and meteorological metrics.
-* **Data Splitting:** Clean partitioning into training and testing segments to validate generalized predictive accuracy and prevent overfitting.
-
-### 3. Machine Learning Modeling
-
-* **Regression Pipeline:** Training models to predict continuous probability scores (`FloodProbability`).
-* **Performance Evaluation:** Rigorous benchmarking using standard data science metrics:
-* **Mean Squared Error (MSE)** & **Root Mean Squared Error (RMSE)** to measure residual variance.
-* **R-squared ($R^2$) Score** to calculate the proportion of variance explained by the environmental features.
-
-
+* **`backend/`**: A Python Flask web server that handles HTTP requests, processes input data parameters, loads the trained serialized model (`model.pkl`), and returns real-time probability scores.
+* **`frontend/`**: A lightweight web interface built with HTML5, CSS3, and JavaScript (`Fetch API`) allowing users to interactively tweak metrics and view analytical risk readouts.
+* **`ml/`**: The core data science pipeline containing exploratory data analysis notebooks (`Project_2.ipynb`), data scaling profiles, and the model training script (`train_model.py`).
+* **`dataset/`**: The local storage directory designated for housing the raw data matrices and target parameters.
 
 ---
 
-## 💻 Tech Stack
+## 📊 Features & Core Pipeline
 
-* **Environment:** Jupyter Notebook / Python 3
-* **Data Manipulation:** `pandas`, `numpy`
-* **Visualization:** `matplotlib`, `seaborn`
-* **Machine Learning:** `scikit-learn`
+### 1. Interactive UI Dashboard
+
+* Allows custom input configurations across major environmental indicators.
+* Provides instant, dynamic visual feedback on calculated risk probabilities.
+
+### 2. Machine Learning Engine
+
+* **Exploratory Data Analysis (EDA):** Performs data-profiling, variance distribution mapping, and evaluates multicollinearity via feature-to-target correlation matrices.
+* **Feature Scaler Integration:** Standardizes varying geographical and meteorological telemetry indices for stable inference.
+* **Serialized Predictive Model:** Implements a validated scikit-learn regression model compiled into a high-performance pickle (`.pkl`) payload.
+
+### 3. RESTful API Endpoints
+
+* Decoupled backend API architecture structured to intake JSON inputs, feed values cleanly to the inference pipeline, and return prediction responses.
+
+---
+
+## 🛠️ Tech Stack & Requirements
+
+* **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+* **Backend Framework:** Python Flask
+* **Data Science & Machine Learning:** `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`
+* **Model Serialization:** `pickle`
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### 1. Prerequisites
 
-Make sure you have a Python environment set up with the required libraries. You can install them via pip:
+Ensure you have Python 3.x installed on your machine. Install all runtime dependencies by running:
 
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn jupyter
+pip install -r requirements.txt
 
 ```
 
-### Running the Notebook
+### 2. Dataset Configuration
 
-1. Clone this repository locally.
-2. Ensure your dataset file is placed in the designated directory referenced inside the notebook.
-3. Launch Jupyter Notebook or JupyterLab:
+Due to GitHub file size limits, the raw data matrix is skipped by version tracking rules.
+
+1. Download the raw data asset file from your source provider.
+2. Save the file inside the root of the **`dataset/`** directory.
+3. Ensure the file is named exactly: `Flood Prediction Dataset.csv`
+
+### 3. Run the Backend Server
+
+Navigate to the backend directory and launch the Flask development engine:
+
 ```bash
-jupyter notebook
+cd backend
+python app.py
 
 ```
 
+The server will initialize locally (typically at `http://127.0.0.1:5000`).
 
-4. Open `Flood Probability Prediction System 1.ipynb` and execute the cells sequentially to reproduce the analysis, visualizations, and model metrics.
+### 4. Launch the Frontend
+
+Open the `frontend/index.html` file directly in any modern web browser to begin testing parameters and generating real-time flood risk reports.
